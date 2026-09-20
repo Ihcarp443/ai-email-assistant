@@ -1,0 +1,257 @@
+[
+  {
+    "id": "meet-schedule-001",
+    "subject": "Quick sync on Q3 roadmap?",
+    "sender": "priya.sharma@acme.com",
+    "body": "Hi, can we set up a call to discuss the Q3 roadmap? I'm free next Monday at 2pm. Let's include Raj (raj@acme.com) too.",
+    "expected": {
+      "category": "Meeting Request",
+      "priority": "Medium",
+      "meeting_related": true,
+      "meeting_intent": "schedule",
+      "attendees_contains": ["Raj"],
+      "attendee_emails_contains": ["raj@acme.com"],
+      "action_items": [],
+      "should_draft_response": true,
+      "draft_criteria": "Acknowledges the sender and confirms/responds to the proposed Monday 2pm meeting request."
+    }
+  },
+  {
+    "id": "meet-reschedule-002",
+    "subject": "Need to move tomorrow's 10am meeting",
+    "sender": "john.doe@partner.com",
+    "body": "Something came up - can we push tomorrow's 10am meeting to 3pm instead? Same attendees.",
+    "expected": {
+      "category": "Meeting Request",
+      "priority": "High",
+      "meeting_related": true,
+      "meeting_intent": "reschedule",
+      "action_items": [],
+      "should_draft_response": true,
+      "draft_criteria": "Acknowledges the reschedule request and confirms new proposed time of 3pm."
+    }
+  },
+  {
+    "id": "meet-cancel-003",
+    "subject": "Cancelling Friday's design review",
+    "sender": "lena.wu@acme.com",
+    "body": "Hey team, I need to cancel Friday's design review. We'll reschedule once the mockups are ready.",
+    "expected": {
+      "category": "Meeting Request",
+      "priority": "Medium",
+      "meeting_related": true,
+      "meeting_intent": "cancel",
+      "action_items": [],
+      "should_draft_response": true,
+      "draft_criteria": "Acknowledges the cancellation of Friday's design review politely."
+    }
+  },
+  {
+    "id": "meet-availability-004",
+    "subject": "What's your availability next week?",
+    "sender": "hr@acme.com",
+    "body": "We'd like to schedule your performance review sometime next week. What times work for you?",
+    "expected": {
+      "category": "Meeting Request",
+      "priority": "Medium",
+      "meeting_related": true,
+      "meeting_intent": "availability_check",
+      "action_items": [
+          {"task": "Provide availability for next week", "deadline": "as soon as possible"}
+        ],
+      "should_draft_response": true,
+      "draft_criteria": "Acknowledges the request and responds with availability or asks for options."
+    }
+  },
+  {
+    "id": "task-critical-005",
+    "subject": "URGENT: Production outage - need fix by EOD",
+    "sender": "oncall@acme.com",
+    "body": "Prod is down for all EU customers. We need a hotfix deployed by end of day today. Please own the rollback plan and report back by 5pm.",
+    "expected": {
+      "category": "Task / Action Required",
+      "priority": "Critical",
+      "meeting_related": false,
+      "meeting_intent": "none",
+      "action_items": [
+        {"task": "Deploy hotfix", "deadline": "end of day today"},
+        {"task": "Own rollback plan", "deadline": "5pm"}
+      ],
+
+      "should_draft_response": true,
+      "draft_criteria": "Acknowledges the urgency and confirms the action items (hotfix, rollback plan, 5pm report) will be handled."
+    }
+  },
+  {
+    "id": "support-006",
+    "subject": "Login issues since yesterday",
+    "sender": "customer1@client.com",
+    "body": "I've been unable to log in to my account since yesterday. It just shows a spinner. Can you help?",
+    "expected": {
+      "category": "Support Request",
+      "priority": "High",
+      "meeting_related": false,
+      "meeting_intent": "none",
+      "action_items": [
+        {"task": "Investigate login issue for customer1"}
+      ],
+      "should_draft_response": true,
+      "draft_criteria": "Acknowledges the login issue and confirms it will be investigated."
+    }
+  },
+  {
+    "id": "info-request-007",
+    "subject": "Question about pricing tiers",
+    "sender": "prospect@newco.com",
+    "body": "Hi, could you tell me the difference between the Pro and Enterprise pricing tiers?",
+    "expected": {
+      "category": "Information Request",
+      "priority": "Low",
+      "meeting_related": false,
+      "meeting_intent": "none",
+      "action_items": [],
+      "should_draft_response": true,
+      "draft_criteria": "Acknowledges the question about Pro vs Enterprise pricing tiers."
+    }
+  },
+  {
+    "id": "approval-008",
+    "subject": "Approval needed: $12k vendor contract",
+    "sender": "finance@acme.com",
+    "body": "Please review and approve the attached $12k vendor contract with Northwind Traders by Thursday.",
+    "expected": {
+      "category": "Approval Required",
+      "priority": "High",
+      "meeting_related": false,
+      "meeting_intent": "none",
+      "action_items": [
+        {"task": "Review and approve $12k Northwind Traders contract", "deadline": "Thursday"}
+      ],
+      "should_draft_response": true,
+      "draft_criteria": "Acknowledges the approval request and the Thursday deadline."
+    }
+  },
+  {
+    "id": "internal-comm-009",
+    "subject": "Heads up: office closed Monday",
+    "sender": "facilities@acme.com",
+    "body": "Just a heads up that the office will be closed this Monday for maintenance. Please plan to work remotely.",
+    "expected": {
+      "category": "Internal Communication",
+      "priority": "Low",
+      "meeting_related": false,
+      "meeting_intent": "none",
+      "action_items": [],
+      "should_draft_response": true,
+      "draft_criteria": "Brief acknowledgement that the office closure notice was received."
+    }
+  },
+  {
+    "id": "customer-query-010",
+    "subject": "Can I upgrade my plan mid-cycle?",
+    "sender": "customer2@client.com",
+    "body": "If I upgrade my subscription mid-cycle, will I be charged a pro-rated amount?",
+    "expected": {
+      "category": "Customer Query",
+      "priority": "Medium",
+      "meeting_related": false,
+      "meeting_intent": "none",
+      "action_items": [],
+      "should_draft_response": true,
+      "draft_criteria": "Acknowledges the mid-cycle upgrade / pro-ration question."
+    }
+  },
+  {
+    "id": "followup-011",
+    "subject": "Following up on last week's proposal",
+    "sender": "biz.dev@partner.com",
+    "body": "Just following up - did you get a chance to review the proposal I sent last Tuesday?",
+    "expected": {
+      "category": "Follow Up",
+      "priority": "Medium",
+      "meeting_related": false,
+      "meeting_intent": "none",
+      "action_items": [],
+      "should_draft_response": true,
+      "draft_criteria": "Acknowledges the follow-up on the proposal sent last Tuesday."
+    }
+  },
+  {
+    "id": "newsletter-012",
+    "subject": "This Week in AI - Issue #147",
+    "sender": "newsletter@techdigest.com",
+    "body": "This week: new model releases, funding rounds, and our top 5 reads. Unsubscribe anytime.",
+    "expected": {
+      "category": "Newsletter",
+      "priority": "Low",
+      "meeting_related": false,
+      "meeting_intent": "none",
+      "action_items": [],
+      "should_draft_response": false,
+      "draft_criteria": "No response should be drafted for a newsletter."
+    }
+  },
+  {
+    "id": "spam-013",
+    "subject": "You've won a free iPhone!!!",
+    "sender": "noreply@totally-legit-prizes.biz",
+    "body": "Congratulations! Click here to claim your free iPhone before it's too late!",
+    "expected": {
+      "category": "Spam",
+      "priority": "Low",
+      "meeting_related": false,
+      "meeting_intent": "none",
+      "action_items": [],
+      "should_draft_response": false,
+      "draft_criteria": "No response should be drafted for spam."
+    }
+  },
+  {
+    "id": "meet-plus-action-014",
+    "subject": "Contract review meeting + prep doc",
+    "sender": "legal@acme.com",
+    "body": "Let's meet Wednesday at 11am to review the vendor contract. Before then, please prepare a summary of the key risk clauses.",
+    "expected": {
+      "category": "Meeting Request",
+      "priority": "High",
+      "meeting_related": true,
+      "meeting_intent": "schedule",
+      "action_items": [
+        {"task": "Prepare summary of key risk clauses", "deadline": "before Wednesday 11am"}
+      ],
+      "should_draft_response": true,
+      "draft_criteria": "Acknowledges both the Wednesday 11am meeting and the request to prepare the risk-clause summary beforehand."
+    }
+  },
+  {
+    "id": "meet-missing-info-015",
+    "subject": "Let's catch up sometime",
+    "sender": "colleague@acme.com",
+    "body": "We should catch up soon, it's been a while. Let me know if you're free.",
+    "expected": {
+      "category": "Meeting Request",
+      "priority": "Low",
+      "meeting_related": true,
+      "meeting_intent": "schedule",
+      "missing_information_nonempty": true,
+      "action_items": [],
+      "should_draft_response": true,
+      "draft_criteria": "Acknowledges the informal catch-up request without inventing a specific date or time."
+    }
+  },
+  {
+    "id": "system-notif-016",
+    "subject": "Your password was changed",
+    "sender": "security@acme.com",
+    "body": "This is a confirmation that your account password was successfully changed on Aug 5, 2026. If this wasn't you, contact support immediately.",
+    "expected": {
+      "category": "System Notification",
+      "priority": "Medium",
+      "meeting_related": false,
+      "meeting_intent": "none",
+      "action_items": [],
+      "should_draft_response": true,
+      "draft_criteria": "Brief acknowledgement; no action items should be invented."
+    }
+  }
+]

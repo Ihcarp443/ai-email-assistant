@@ -23,6 +23,8 @@ Guidelines:
 - Be concise and professional.
 - Think step by step before using tools.
 """
+
+
 SYSTEM_PROMPT = """
 You are an intelligent AI Email Assistant.
 

@@ -40,7 +40,6 @@ class EmailState(TypedDict):
     #  Classification 
     category: str
     priority: str
-    intents: List[str]
 
     #  Long-Term Memory 
     retrieved_context: Dict[str, Any]

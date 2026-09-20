@@ -15,7 +15,6 @@ def get_initial_state() -> EmailState:
         "action_items": [],
         "category": "",
         "priority": "",
-        "intents": [],
         "retrieved_context": {},
         "reasoning": "",
         "agent_actions": [],
