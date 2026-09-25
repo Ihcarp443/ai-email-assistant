@@ -1,0 +1,41 @@
+# Virtual environments
+venv/
+lvenv/
+*.egg-info/
+
+# Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment and credentials
+.env
+config/credentials.json
+config/token.json
+
+# SQLite database
+*.db
+
+# Evaluation outputs and reports
+evals/__pycache__/
+evals/results*/
+evals/report*.html
+evals/results.json
+evals/results.xml
+
+# DeepEval artifacts
+.deepeval/
+
+# Old backup folder
+old/
+
+# Logs
+*.log
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
