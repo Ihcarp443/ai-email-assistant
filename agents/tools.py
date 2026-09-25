@@ -26,7 +26,7 @@ Choose intent ONLY from:
 Return ONLY JSON.
 
 {{
-    "meeting_related": true,
+    "meeting_related": True,
     "meeting_intent": ""
 }}
 
@@ -35,12 +35,6 @@ Email:
 {email_content}
 """
 
-    # response = model.invoke(prompt)
-
-    # response = str(response)
-    # response = response.replace("```json", "")
-    # response = response.replace("```", "")
-    # response = response.strip()
     response = model.invoke(prompt)
     response = str(response)
     response = response.replace("```json", "")
@@ -96,12 +90,6 @@ Email:
 
 {email_content}
 """
-    # response = model.invoke(prompt)
-
-    # response = str(response)
-    # response = response.replace("```json", "")
-    # response = response.replace("```", "")
-    # response = response.strip()
     response = model.invoke(prompt)
     response = str(response)
     response = response.replace("```json", "")
@@ -230,6 +218,58 @@ Email:
 
     return result
 
+
+
+@tool
+def response_drafter_tool(email_content: str, availability_note: str = "") -> dict:
+    """Create a professional email response. For meeting emails, availability_note MUST
+    summarize the check_calendar_availability result (free/busy, conflicts, alternatives)."""
+
+    print("\n===== RESPONSE DRAFTER STARTED =====")
+
+    prompt = f"""
+Draft a professional response.
+
+The response should:
+
+1. Acknowledge the sender.
+2. Confirm action items if present.
+3. Confirm meeting attendance if applicable.
+4. Maintain a professional tone.
+
+Email:
+
+{email_content}
+
+Calendar availability: {availability_note or "NOT CHECKED"}
+Rules: accept the meeting only if the note says free. If busy, decline politely and offer
+the alternatives. If NOT CHECKED, do not confirm attendance.
+
+Return ONLY JSON.
+
+{{
+    "draft_response": ""
+}}
+"""
+
+    response = model.invoke(prompt)
+
+    print("Raw Draft Response:")
+    print(response)
+    response = str(response)
+    response = response.replace("```json", "")
+    response = response.replace("```", "")
+    response = response.strip()
+    result = json.loads(response)
+
+    print("Draft Generated:")
+    print(result)
+
+    return result
+
+
+
+
 @tool
 def schedule_meeting(email_content: str) -> dict:
     """
@@ -267,14 +307,6 @@ Email:
 
     print("Raw Scheduler Response:")
     print(response)
-    # response = str(response)
-
-    # response = response.replace("```json", "")
-    # response = response.replace("```", "")
-    # response = response.strip()
-
-    # result = json.loads(response)
-    response = model.invoke(prompt)
     response = str(response)
     response = response.replace("```json", "")
     response = response.replace("```", "")
@@ -305,57 +337,3 @@ def memory_lookup(query: str) -> dict:
     print(memory)
 
     return memory
-
-@tool
-def response_drafter_tool(email_content: str) -> dict:
-    """
-    Create a professional email response.
-    """
-
-    print("\n===== RESPONSE DRAFTER STARTED =====")
-
-    prompt = f"""
-Draft a professional response.
-
-The response should:
-
-1. Acknowledge the sender.
-2. Confirm action items if present.
-3. Confirm meeting attendance if applicable.
-4. Maintain a professional tone.
-
-Email:
-
-{email_content}
-
-Return ONLY JSON.
-
-{{
-    "draft_response": ""
-}}
-"""
-
-    response = model.invoke(prompt)
-
-    print("Raw Draft Response:")
-    print(response)
-    # response = str(response)
-    # response = response.replace("```json", "")
-    # response = response.replace("```", "")
-    # response = response.strip()
-
-    # result = json.loads(response)
-    response = model.invoke(prompt)
-    response = str(response)
-    response = response.replace("```json", "")
-    response = response.replace("```", "")
-    response = response.strip()
-    result = json.loads(response)
-
-    print("Draft Generated:")
-    print(result)
-
-    return result
-
-
-

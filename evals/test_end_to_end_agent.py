@@ -62,7 +62,7 @@ def test_agent_tool_selection(golden):
         violations.append("response_drafter_tool was called but should NOT have been (spam/newsletter).")
 
     if is_meeting:
-        meeting_tools = {"detect_meeting_intent", "extract_meeting_details", "schedule_meeting"}
+        meeting_tools = {"detect_meeting_intent", "extract_meeting_details"}
         if not (tools_called & meeting_tools):
             violations.append(f"Expected a meeting tool to be called, got: {tools_called}")
 

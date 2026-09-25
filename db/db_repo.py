@@ -119,7 +119,6 @@ def get_email_by_id(thread_id: str):
 
     return email 
 
-    # return dict(row) if row else None
 
 
 def get_actions_by_email(thread_id: str):

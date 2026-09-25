@@ -10,11 +10,12 @@ def create_google_meet(
     attendees=None
 ):
     print("Creating meeting")
+
     start_dt = datetime.strptime(
         f"{meeting_date} {meeting_time}",
         "%Y-%m-%d %H:%M"
     )
-    attendees = []
+
     end_dt = start_dt + timedelta(hours=1)
 
     event = {

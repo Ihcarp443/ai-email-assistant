@@ -1,10 +1,33 @@
-import json, base64
-from graph.state import EmailState
+import base64
+import json
+import sys
 from email.mime.text import MIMEText
 
-def get_initial_state() -> EmailState:
+from graph.state import EmailState
+
+
+def _log(message: str) -> None:
+    print(message, file=sys.stderr)
+
+
+def unwrap(result):
+    if isinstance(result, dict):
+        return result
+    if isinstance(result, list):
+        result = "".join(
+            block.get("text", "") if isinstance(block, dict) else str(block)
+            for block in result
+        )
+    if isinstance(result, str):
+        try:
+            return json.loads(result)
+        except json.JSONDecodeError:
+            return {"text": result}
+    return {}
+
+def get_initial_state(message_id: str | None = None) -> EmailState:
     return {
-        "email_id": "",
+        "email_id": message_id or "",
         "thread_id": "",
         "sender": "",
         "recipient": "",
@@ -19,15 +42,24 @@ def get_initial_state() -> EmailState:
         "reasoning": "",
         "agent_actions": [],
         "tool_outputs": {},
-        "status": "STARTED"
+        "status": "STARTED",
     }
+
+
+def _strip_subject_line(text: str) -> str:
+    lines = text.splitlines()
+    if lines and lines[0].strip().lower().startswith("subject:"):
+        lines = lines[1:]
+        while lines and not lines[0].strip():
+            lines.pop(0)
+    return "\n".join(lines)
+
 
 def parse_agent_output(result):
     action_items = []
     meeting = {"meeting_detected": "No", "meeting_date": "N/A", "meeting_time": "N/A", "attendees": []}
     draft_response = ""
-    # print("result", result)
-    
+
     messages = result.get("messages", [])
     for msg in messages:
         if isinstance(msg, dict):
@@ -42,8 +74,7 @@ def parse_agent_output(result):
         if msg_type == "tool":
             if msg_name == "extract_action_items":
                 try:
-                    data = json.loads(msg_content)
-                    action_items = data.get("action_items", [])
+                    action_items = json.loads(msg_content).get("action_items", [])
                 except Exception:
                     pass
             elif msg_name == "schedule_meeting":
@@ -51,55 +82,49 @@ def parse_agent_output(result):
                     meeting = json.loads(msg_content)
                 except Exception:
                     pass
-            elif msg_name == "detect_meeting_intent":
+            elif msg_name in ("detect_meeting_intent", "extract_meeting_details"):
                 try:
-                    data = json.loads(msg_content)
-                    meeting.update(data)
-                except Exception:
-                    pass
-
-            elif msg_name == "extract_meeting_details":
-                try:
-                    data = json.loads(msg_content)
-                    meeting.update(data)
+                    meeting.update(json.loads(msg_content))
                 except Exception:
                     pass
             elif msg_name == "response_drafter_tool":
                 try:
-                    data = json.loads(msg_content)
-                    draft_response = data.get("draft_response", "")
+                    draft_response = json.loads(msg_content).get("draft_response", "")
                 except Exception:
                     pass
-                    
+
+    meeting["attendees"] = [
+        a if isinstance(a, dict) else {"name": str(a), "email": ""}
+        for a in meeting.get("attendees", [])
+    ]
+    if "meeting_related" not in meeting:
+        meeting["meeting_related"] = meeting.get("meeting_detected") is True
+    else:
+        meeting["meeting_detected"] = True if meeting.get("meeting_related") else "No"
+
     result["parsed_action_items"] = action_items
     result["parsed_meeting"] = meeting
-    result["parsed_draft"] = draft_response
+    result["parsed_draft"] = _strip_subject_line(draft_response)
     return result
 
+
 def send_email(service, to_email, subject, body_text, thread_id=None):
-    """Creates and sends an email. Optionally attaches to an existing thread."""
+    """Creates and sends an email. Optionally attaches to an existing Gmail thread."""
     try:
         if thread_id and not subject.lower().startswith("re:"):
             subject = f"Re: {subject}"
 
         message = MIMEText(body_text)
-        message['to'] = to_email
-        message['subject'] = subject
+        message["to"] = to_email
+        message["subject"] = subject
 
         create_message = {}
-        
-        if thread_id:
-            message['In-Reply-To'] = thread_id
-            message['References'] = thread_id
-            create_message['threadId'] = thread_id
+        create_message["raw"] = base64.urlsafe_b64encode(message.as_bytes()).decode("utf-8")
 
-        raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode('utf-8')
-        create_message['raw'] = raw_message
-
-        send_status = service.users().messages().send(userId='me', body=create_message).execute()
-        print(f"Email sent successfully! Message ID: {send_status['id']}")
+        send_status = service.users().messages().send(userId="me", body=create_message).execute()
+        _log(f"Email sent successfully! Message ID: {send_status['id']}")
         return send_status
 
     except Exception as e:
-        print(f"An error occurred: {e}")
-        return None
+        _log(f"An error occurred: {type(e).__name__}: {e}")
+        raise
